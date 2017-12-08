@@ -1,7 +1,7 @@
 require File.join([File.dirname(__FILE__), 'lib', 'rumbda', 'version.rb'])
 
 Gem::Specification.new do |gem|
-  gem.name          = 'rumbda'
+  gem.name          = 'rumbda-alt'
   gem.version       = Rumbda::VERSION
   gem.authors       = ['kleaver']
   gem.email         = []
