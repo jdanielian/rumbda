@@ -1,33 +1,36 @@
-const exec = require('child_process').exec;
-const fs = require('fs');
+/* const exec = require('child_process').exec;
 
-exports.handler = function(event, context, callback) {
-  // In order to return a value and not deal with stdout rumbda watches a file.
-  const jsonFilePath = '/tmp/rumbda.' + Math.random() + '.json';
-  process.env['RUMBDA_RESULT_JSON_FILENAME'] = jsonFilePath;
+exports.handler = function(event, context) {
+    const child = exec('./ruby_wrapper ' + "'" +  JSON.stringify(event) + "'", (result) => {
+        // Resolve with result of process
+        context.done(result);
+    });
 
-  const child = exec('./ruby_wrapper ' + "'" +  JSON.stringify(event) + "'", (error, stdout, stderr) => {
-    if (error) {
-      callback(error);
-      return;
-    }
+    // Log process stdout and stderr
+    child.stdout.on('data', console.log);
+    child.stderr.on('data', console.error);
+}
+  */
 
-    if (fs.existsSync(jsonFilePath)) {
-      fs.readFile(jsonFilePath, 'utf8', function (err, data) {
-        fs.unlink(jsonFilePath); 
 
-        if (err) {
-          callback(err);
-          return;
+var spawn = require('child_process').spawn;
+
+var invokeRubyApp = "./ruby_wrapper";
+
+exports.handler = function(event, context) {
+    console.log("Starting process: " + invokeRubyApp);
+    var child = spawn(invokeRubyApp, [JSON.stringify(event, null, 2), JSON.stringify(context, null, 2)]);
+
+    child.stdout.on('data', function (data) { console.log("stdout:\n"+data); });
+    child.stderr.on('data', function (data) { console.log("stderr:\n"+data); });
+
+    child.on('close', function (code) {
+        if(code === 0) {
+            context.succeed("Process completed: " + invokeRubyApp);
+        } else {
+            context.fail("Process \"" + invokeRubyApp + "\" exited with code: " + code);
         }
-        callback(null, (data.length > 0) ? JSON.parse(data) : null);
-      });
-    } else {
-      callback(null);
-    }
-  });
+    });
+}
 
-  child.stdout.on('data', console.log);
-  child.stderr.on('data', console.error);
-};
 
