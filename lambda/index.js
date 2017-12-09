@@ -26,7 +26,7 @@ exports.handler = function(event, context) {
 
     child.on('close', function (code) {
         if(code === 0) {
-            context.succeed("Process completed: " + invokeRubyApp);
+            //context.succeed("Process completed: " + invokeRubyApp);
         } else {
             context.fail("Process \"" + invokeRubyApp + "\" exited with code: " + code);
         }
