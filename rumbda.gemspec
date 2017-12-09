@@ -1,5 +1,8 @@
 require File.join([File.dirname(__FILE__), 'lib', 'rumbda', 'version.rb'])
 
+# gem build rumbda.gemspec
+# gem push rumbda-alt-0.0.2.gem
+
 Gem::Specification.new do |gem|
   gem.name          = 'rumbda-alt'
   gem.version       = Rumbda::VERSION

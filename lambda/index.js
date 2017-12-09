@@ -17,11 +17,11 @@ var spawn = require('child_process').spawn;
 
 var invokeRubyApp = "./ruby_wrapper";
 
-exports.handler = function(event, context) {
+exports.handler = function(event, context, callback) {
     console.log("Starting process: " + invokeRubyApp);
     var child = spawn(invokeRubyApp, [JSON.stringify(event, null, 2), JSON.stringify(context, null, 2)]);
 
-    child.stdout.on('data', function (data) { console.log("stdout:\n"+data); });
+    child.stdout.on('data', function (data) { console.log("stdout:\n"+data);callback(null, data); });
     child.stderr.on('data', function (data) { console.log("stderr:\n"+data); });
 
     child.on('close', function (code) {
